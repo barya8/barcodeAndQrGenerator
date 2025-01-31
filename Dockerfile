@@ -1,15 +1,14 @@
 # Build stage
-FROM maven:3.8.6-openjdk-17-alpine AS builder
-
+FROM eclipse-temurin:17-jdk-alpine AS builder
+ 
 WORKDIR /app
 COPY . .
-RUN mvn clean package -DskipTests
-
+RUN ./mvnw package
+ 
 # Run stage
-FROM eclipse-temurin:21-jdk-alpine AS runner
-
+FROM eclipse-temurin:17-jdk-alpine AS runner
+ 
 WORKDIR /app
-RUN ls -l
 COPY --from=builder /app/target/*.jar app.jar
-
+ 
 CMD ["java", "-jar", "app.jar"]
