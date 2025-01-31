@@ -1,5 +1,5 @@
 # Build stage
-FROM maven:3.8.6-openjdk-21-alpine AS builder
+FROM maven:3.8.6-openjdk-17-alpine AS builder
 
 WORKDIR /app
 COPY . .
