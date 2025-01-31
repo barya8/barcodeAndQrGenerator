@@ -1,5 +1,5 @@
 # Build stage
-FROM maven:3.9.1-eclipse-temurin-21 AS builder
+FROM maven:3.8.6-openjdk-21-alpine AS builder
 
 WORKDIR /app
 COPY . .
