@@ -14,8 +14,8 @@ import java.util.Base64;
 @Configuration
 public class FirebaseConfig {
 
-    @Value("${FIREBASE_SERVICE_ACCOUNT_PATH}")
-    private String serviceAccountPath;
+//    @Value("${FIREBASE_SERVICE_ACCOUNT_PATH}")
+//    private String serviceAccountPath;
 
     @Value("${FIREBASE_SERVICE_ACCOUNT_BASE64}")
     private String serviceAccountBase64;
