@@ -82,7 +82,7 @@ public class BarcodeQRService {
             BufferedImage qrImage = ImageIO.read(new ByteArrayInputStream(qrImageBytes));
 
             if (isQRCodeReadable(qrImage)) {
-                QrData qrData = new QrData(text, qrSize, errorCorrection, base64QrImage);
+                QrData qrData = new QrData(text, qrSize, correctionLevel.toString(), base64QrImage);
                 firebaseRealtimeDbService.writeData(apiKey, qrData);
             }
             return qrImageBytes;
