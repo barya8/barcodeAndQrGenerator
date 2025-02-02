@@ -80,7 +80,7 @@ public class BarcodeQRController {
         }
     }
 
-    @GetMapping("/qrcode/check")
+    @PostMapping("/qrcode/check")
     public ResponseEntity<ServiceResult> qrCodeCheck(@RequestParam MultipartFile file) {
         try {
             BufferedImage image = ImageIO.read(file.getInputStream());
