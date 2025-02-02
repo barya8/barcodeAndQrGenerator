@@ -165,7 +165,7 @@ public class BarcodeQRController {
         }
     }
 
-    @GetMapping("/read")
+    @PostMapping("/read")
     public ResponseEntity<?> readQRCode(@RequestParam("file") MultipartFile file) {
         try {
             ParsedUrl parsedUrl = barcodeQRService.readAndParseQRCode(file);
