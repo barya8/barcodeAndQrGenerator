@@ -5,7 +5,7 @@ import com.company.interfaces.DatabaseCallback;
 import com.company.model.ApiResponse;
 import com.company.model.ParsedUrl;
 import com.company.model.ServiceResult;
-import com.company.service.BarcodeQRService;
+import com.company.service.QRService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -16,62 +16,29 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.sql.Date;
 import java.util.concurrent.CountDownLatch;
 
 @Log4j2
 @RestController
 @RequestMapping("/api/barcodes")
-public class BarcodeQRController {
+public class QRController {
 
     @Autowired
-    private BarcodeQRService barcodeQRService;
+    private QRService qrService;
 
     // Generate QR Code
     @PostMapping("/generateQRCode")
-    public ResponseEntity<byte[]> generateQRCode(@RequestParam String text,
+    public ResponseEntity<byte[]> generateQRCode(@RequestParam String url,
                                                  @RequestParam Integer type,
                                                  @RequestParam(required = false) Integer size,
                                                  @RequestParam(required = false) String errorCorrection,
-                                                 @RequestParam(required = false, defaultValue = "true") boolean valid,
-                                                 @RequestParam(required = false) Date startDate,
-                                                 @RequestParam(required = false) Date endDate,
+                                                 @RequestParam(required = false, defaultValue = "false") boolean isScanned,
+                                                 @RequestParam(required = false) String startDate,
+                                                 @RequestParam(required = false) String endDate,
                                                  @RequestHeader("x-api-key") String apiKey) {
         try {
-            byte[] qrCodeImage = barcodeQRService.generateQRCodeAndWriteToDB(apiKey, text, size,
-                    errorCorrection, valid, startDate, endDate, type);
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Content-Type", "image/png");
-            return new ResponseEntity<>(qrCodeImage, headers, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    // Generate Barcode
-//    @GetMapping("/generateBarcode/{text}")
-//    public ResponseEntity<byte[]> generateBarcode(@PathVariable String text) {
-//        try {
-//            byte[] barcodeImage = barcodeQRService.generateBarcode(text);
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.set("Content-Type", "image/png");
-//            return new ResponseEntity<>(barcodeImage, headers, HttpStatus.OK);
-//        } catch (Exception e) {
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-
-    // Generate QR Code with logo
-    @PostMapping("/generateQRCodeWithLogo")
-    public ResponseEntity<byte[]> generateQRCodeWithLogo(@RequestParam String text,
-                                                         @RequestParam(required = false) Integer size,
-                                                         @RequestParam(required = false) String errorCorrection,
-                                                         @RequestParam(required = false) boolean valid,
-                                                         @RequestParam(required = false) Date startDate,
-                                                         @RequestParam(required = false) Date endDate,
-                                                         @RequestHeader("x-api-key") String apiKey) {
-        try {
-            byte[] qrCodeImage = barcodeQRService.generateQRCodeWithLogo(text, size, errorCorrection);
+            byte[] qrCodeImage = qrService.generateQRCodeAndWriteToDB(apiKey, url, size,
+                    errorCorrection, isScanned, startDate, endDate, type);
             HttpHeaders headers = new HttpHeaders();
             headers.set("Content-Type", "image/png");
             return new ResponseEntity<>(qrCodeImage, headers, HttpStatus.OK);
@@ -84,7 +51,7 @@ public class BarcodeQRController {
     public ResponseEntity<ServiceResult> qrCodeCheck(@RequestParam MultipartFile file) {
         try {
             BufferedImage image = ImageIO.read(file.getInputStream());
-            barcodeQRService.isQRCodeReadable(image);
+            qrService.isQRCodeReadable(image);
             return ResponseEntity.ok(ServiceResult.builder()
                     .returnCode("0")
                     .returnMessage("Valid QR code")
@@ -97,33 +64,22 @@ public class BarcodeQRController {
         }
     }
 
-//    @PostMapping("/qrcode/scan")
-//    public ResponseEntity qrCodeScan(@RequestParam MultipartFile file) {
-//        try {
-//            BufferedImage image = ImageIO.read(file.getInputStream());
-//            barcodeQRService.isQRCodeReadable(image);
-//            return new ResponseEntity(HttpStatus.OK);
-//        } catch (Exception e) {
-//            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-
     @PutMapping("/updateQrById")
     public ResponseEntity updateData(@RequestParam Integer id,
                                      @RequestParam Integer type,
                                      @RequestParam String text,
                                      @RequestParam(required = false) Integer size,
                                      @RequestParam(required = false) String errorCorrection,
-                                     @RequestParam(required = false) boolean valid,
-                                     @RequestParam(required = false) Date startDate,
-                                     @RequestParam(required = false) Date endDate,
+                                     @RequestParam(required = false) boolean isScanned,
+                                     @RequestParam(required = false) String startDate,
+                                     @RequestParam(required = false) String endDate,
                                      @RequestHeader("x-api-key") String apiKey) {
         try {
             // Create a latch with 1 count to wait for callback
             CountDownLatch latch = new CountDownLatch(1);
             final ResponseEntity<ServiceResult>[] response = new ResponseEntity[1];
-            barcodeQRService.generateQRCodeAndUpdateDatabase(apiKey, text, size, errorCorrection,
-                    id, valid, startDate, endDate, type, new DatabaseCallback() {
+            qrService.generateQRCodeAndUpdateDatabase(apiKey, text, size, errorCorrection,
+                    id, isScanned, startDate, endDate, type, new DatabaseCallback() {
                         @Override
                         public void onSuccess() {
                             // Return a success response
@@ -168,7 +124,7 @@ public class BarcodeQRController {
     @PostMapping("/read")
     public ResponseEntity<?> readQRCode(@RequestParam("file") MultipartFile file) {
         try {
-            ParsedUrl parsedUrl = barcodeQRService.readAndParseQRCode(file);
+            ParsedUrl parsedUrl = qrService.readAndParseQRCode(file);
             return ResponseEntity.ok(ApiResponse.builder()
                     .serviceResult(ServiceResult.builder()
                             .returnCode("0")

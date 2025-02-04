@@ -3,7 +3,7 @@ package com.company.controller;
 import com.company.interfaces.DatabaseCallback;
 import com.company.model.ApiResponse;
 import com.company.model.ServiceResult;
-import com.company.service.BarcodeQRService;
+import com.company.service.QRService;
 import com.company.service.FirebaseRealtimeDbService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +19,6 @@ import java.util.concurrent.CountDownLatch;
 @RestController
 @RequestMapping("/api/firebase")
 public class FirebaseRealtimeDbController {
-    @Autowired
-    private BarcodeQRService barcodeQRService;
     @Autowired
     private FirebaseRealtimeDbService firebaseRealtimeDbService;
 

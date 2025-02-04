@@ -81,7 +81,7 @@ public class FirebaseRealtimeDbService {
      *
      * @param data the data to be written
      */
-    public void writeData(String apiKey, QrData data) {
+    public void InsertData(String apiKey, QrData data) {
         databaseReference.child(Constants.DBKeys.QRS).child(apiKey).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
