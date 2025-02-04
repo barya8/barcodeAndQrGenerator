@@ -65,9 +65,6 @@ public class OpenApiConfig {
                                                 .in("header"))
                                         .responses(new ApiResponses()
                                                 .addApiResponse("200", new ApiResponse().description("Data retrieved successfully"))
-                                                .addApiResponse("401", new ApiResponse().description("Unauthorized - API key required")
-                                                        .content(new Content().addMediaType("application/json",
-                                                                new MediaType().schema(new Schema<>().$ref("#/components/schemas/ServiceResult")))))
                                                 .addApiResponse("500", new ApiResponse().description("Error retrieving data")
                                                         .content(new Content().addMediaType("application/json",
                                                                 new MediaType().schema(new Schema<>().$ref("#/components/schemas/ServiceResult")))))
@@ -194,9 +191,6 @@ public class OpenApiConfig {
                                                 .in("header"))
                                         .responses(new ApiResponses()
                                                 .addApiResponse("200", new ApiResponse().description("QR code generated successfully"))
-                                                .addApiResponse("401", new ApiResponse().description("Unauthorized - API key required")
-                                                        .content(new Content().addMediaType("application/json",
-                                                                new MediaType().schema(new Schema<>().$ref("#/components/schemas/ServiceResult")))))
                                                 .addApiResponse("500", new ApiResponse().description("Error generating QR code"))
                                         )))
                         .addPathItem("/api/barcodes/updateQrById",

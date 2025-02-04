@@ -7,7 +7,7 @@ This API provides functionality for generating, scanning, and managing QR codes 
 - [Features](#features)
 - [Endpoints](#endpoints)
 - [Setup](#setup)
-  - [Secured Application Properties](#secured-application-properties)
+   - [Secured Application Properties](#secured-application-properties)
 - [Usage](#usage)
 - [Authentication](#authentication)
 - [Error Handling](#error-handling)
@@ -40,8 +40,8 @@ This API provides functionality for generating, scanning, and managing QR codes 
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/your-repo/your-project.git
-   cd your-project
+   git clone https://github.com/barya8/barcodeAndQrGenerator.git
+   cd barcodeAndQrGenerator
    ```
 
 2. **Build the project**:
