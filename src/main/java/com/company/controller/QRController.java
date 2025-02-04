@@ -67,7 +67,7 @@ public class QRController {
     @PutMapping("/updateQrById")
     public ResponseEntity updateData(@RequestParam Integer id,
                                      @RequestParam Integer type,
-                                     @RequestParam String text,
+                                     @RequestParam String url,
                                      @RequestParam(required = false) Integer size,
                                      @RequestParam(required = false) String errorCorrection,
                                      @RequestParam(required = false) boolean isScanned,
@@ -78,7 +78,7 @@ public class QRController {
             // Create a latch with 1 count to wait for callback
             CountDownLatch latch = new CountDownLatch(1);
             final ResponseEntity<ServiceResult>[] response = new ResponseEntity[1];
-            qrService.generateQRCodeAndUpdateDatabase(apiKey, text, size, errorCorrection,
+            qrService.generateQRCodeAndUpdateDatabase(apiKey, url, size, errorCorrection,
                     id, isScanned, startDate, endDate, type, new DatabaseCallback() {
                         @Override
                         public void onSuccess() {
